@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "../lib/glm/glm.hpp"
 
 // constructor
 Game::Game() {
@@ -17,10 +18,8 @@ bool Game::IsRunning() const {
     return this->isRunning;
 }
 
-float projectilePosX = 0.0f;
-float projectilePosY = 0.0f;
-float projectileVelX = 20.0f;
-float projectileVelY = 30.0f;
+glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
+glm::vec2 projectileVel = glm::vec2(20.0f, 20.0f);
 
 void Game::Initialize(int width, int height) {
     if ( SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -95,9 +94,11 @@ void Game::Update() {
 
     ticksLastFrame = SDL_GetTicks();
 
-    // update entities of the screen etc.
-    projectilePosX += projectileVelX * deltaTime;
-    projectilePosY += projectileVelY * deltaTime;
+    // Use deltaTime to update my game objects
+    projectilePos = glm::vec2(
+        projectilePos.x + projectileVel.x * deltaTime,
+        projectilePos.y + projectileVel.y * deltaTime
+    );
 }
 
 void Game::Render() {
@@ -106,8 +107,8 @@ void Game::Render() {
 
     // struct for a rectangle
     SDL_Rect projectile {
-        (int) projectilePosX,
-        (int) projectilePosY,
+        (int) projectilePos.x,
+        (int) projectilePos.y,
         10,
         10
     };
