@@ -1,125 +1,103 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "./Components/TransformComponent.h"
 #include "../lib/glm/glm.hpp"
 
-// constructor
+EntityManager manager;
+SDL_Renderer* Game::renderer;
+
 Game::Game() {
     this->isRunning = false;
-
 }
 
-// destructor
 Game::~Game() {
-
 }
 
 bool Game::IsRunning() const {
     return this->isRunning;
 }
 
-glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
-glm::vec2 projectileVel = glm::vec2(20.0f, 20.0f);
-
 void Game::Initialize(int width, int height) {
-    if ( SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        // if error
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "Error initializing SDL." << std::endl;
         return;
     }
-
-    // create the window with SDL
     window = SDL_CreateWindow(
         NULL,
-        SDL_WINDOWPOS_CENTERED, // let SDL figure out to position at center
-        SDL_WINDOWPOS_CENTERED, // let SDL figure out to position at center
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         width,
         height,
-        SDL_WINDOW_BORDERLESS // flags -> many more available
+        SDL_WINDOW_BORDERLESS
     );
-
-    if(!window) {
+    if (!window) {
         std::cerr << "Error creating SDL window." << std::endl;
         return;
     }
-
-    // index -1: get the default driver to render
-    // flags 0: no flags to set
-    renderer = SDL_CreateRenderer(window, -1, 0); 
-
-    if(!renderer) {
-        std::cerr << "Error creating Renderer." << std::endl;
+    renderer = SDL_CreateRenderer(window, -1, 0);
+    if (!renderer) {
+        std::cerr << "Error creating SDL renderer." << std::endl;
         return;
     }
 
-    isRunning = true;
+    LoadLevel(0);
 
-    return;    
+    isRunning = true;
+    return;
+}
+
+void Game::LoadLevel(int levelNumber) {
+    Entity& newEntity = manager.AddEntity("projectile");
+    newEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 1);
 }
 
 void Game::ProcessInput() {
     SDL_Event event;
-    SDL_PollEvent(&event); // & reference
-
+    SDL_PollEvent(&event);
     switch (event.type) {
-        case SDL_QUIT:
+        case SDL_QUIT: {
             isRunning = false;
             break;
-
-        case SDL_KEYDOWN:
-            if(event.key.keysym.sym == SDLK_ESCAPE) {
+        }
+        case SDL_KEYDOWN: {
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
                 isRunning = false;
-                // why no break?
             }
-        
-        default:
+        }
+        default: {
             break;
+        }
     }
 }
 
 void Game::Update() {
-    // Sleep the execution until we reach the target frame time in milliseconds
-    int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - ticksLastFrame);
-
-    // Only call delay if we are too fast to process this frame
-    if (timeToWait > 0 && timeToWait <= FRAME_TARGET_TIME) {
-        SDL_Delay(timeToWait);
-    }
-
-    // Delta time is the difference in ticks from last frame converted to seconds
-    float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f; // we want seconds
+    // Wait until 16ms has ellapsed since the last frame
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TARGET_TIME));
+    
+    // Delta time is the difference in ticks from last frame converted to secomds
+    float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
 
     // Clamp deltaTime to a maximum value
     deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
 
+    // Sets the new ticks for the current frame to be used in the next pass
     ticksLastFrame = SDL_GetTicks();
 
-    // Use deltaTime to update my game objects
-    projectilePos = glm::vec2(
-        projectilePos.x + projectileVel.x * deltaTime,
-        projectilePos.y + projectileVel.y * deltaTime
-    );
+    manager.Update(deltaTime);
 }
 
 void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
-    SDL_RenderClear(renderer); // clear backbuffer
+    SDL_RenderClear(renderer);
 
-    // struct for a rectangle
-    SDL_Rect projectile {
-        (int) projectilePos.x,
-        (int) projectilePos.y,
-        10,
-        10
-    };
+    if (manager.HasNoEntities()) {
+        return;
+    }
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRect(renderer, &projectile);
+    manager.Render(); 
 
-
-    // swap backbuffer with frontbuffer
     SDL_RenderPresent(renderer);
-
 }
 
 void Game::Destroy() {

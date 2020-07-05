@@ -5,7 +5,7 @@
 int main(int argc, char *args[]) {
     Game *game = new Game();
 
-    game-> Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    game->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     while (game->IsRunning()) {
         game->ProcessInput();
@@ -14,6 +14,6 @@ int main(int argc, char *args[]) {
     }
 
     game->Destroy();
-    
+
     return 0;
 }
