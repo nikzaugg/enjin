@@ -24,6 +24,7 @@ class Entity {
         void Render();
         void Destroy();
         bool IsActive() const; 
+        void ListAllComponents() const;
         
         template <typename T, typename... TArgs>
         T& AddComponent(TArgs&&... args) {
