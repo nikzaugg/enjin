@@ -60,6 +60,10 @@ void Game::LoadLevel(int levelNumber) {
     newEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 1);
     newEntity.AddComponent<SpriteComponent>("tank-image");
 
+    // For debugging
+    // std::cout << "Has TransformComponent? " << newEntity.HasComponent<TransformComponent>() << std::endl;
+    // std::cout << "Has SpriteComponent? " << newEntity.HasComponent<SpriteComponent>() << std::endl;
+
     manager.ListAllEntities();
 }
 
