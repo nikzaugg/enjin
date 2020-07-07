@@ -54,6 +54,7 @@ void Game::LoadLevel(int levelNumber) {
     /* Start including new assets to the assetmanager list*/
     assetManager->AddTexture("tank-image", std::string("./assets/images/tank-big-right.png").c_str());
     assetManager->AddTexture("chopper-image", std::string("./assets/images/chopper-spritesheet.png").c_str());
+    assetManager->AddTexture("radar-image", std::string("./assets/images/radar.png").c_str());
 
 
     /* Start include entities and also components */
@@ -64,6 +65,10 @@ void Game::LoadLevel(int levelNumber) {
     Entity& chopperEntity = manager.AddEntity("chopper");
     chopperEntity.AddComponent<TransformComponent>(140, 106, 0, 0, 32, 32, 1);
     chopperEntity.AddComponent<SpriteComponent>("chopper-image", 2, 90, true, false);
+
+    Entity& radarEntity = manager.AddEntity("radar");
+    radarEntity.AddComponent<TransformComponent>(720, 15, 0, 0, 64, 64, 1);
+    radarEntity.AddComponent<SpriteComponent>("radar-image", 8, 150, false, false);
 
     // For debugging
     // std::cout << "Has TransformComponent? " << newEntity.HasComponent<TransformComponent>() << std::endl;
