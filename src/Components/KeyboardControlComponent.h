@@ -3,6 +3,7 @@
 
 #include "../Game.h"
 #include "../EntityManager.h"
+#include "../Constants.h"
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
 
@@ -37,6 +38,27 @@ class KeyboardControlComponent: public Component {
             return std::to_string(static_cast<int>(key[0]));
         }
 
+        bool CheckIfInsideWindow() const {
+            unsigned int SPRITE_WIDTH = 32; // TODO: make this dynamic
+
+            // check right of screen
+            if(transform->position.x + SPRITE_WIDTH >= WINDOW_WIDTH) {
+                transform->position.x = WINDOW_WIDTH - SPRITE_WIDTH;
+            }
+            // check left of screen
+            if(transform->position.x <= 0) {
+                transform->position.x = 0;
+            }
+            // check bottom of screen
+            if(transform->position.y + SPRITE_WIDTH >= WINDOW_HEIGHT) {
+                transform->position.y = WINDOW_HEIGHT - SPRITE_WIDTH;
+            }
+            // check top of screen
+            if(transform->position.y <= 0) {
+                transform->position.y = 0;
+            }
+        }
+
         void Initialize() override {
             transform = owner->GetComponent<TransformComponent>();
             sprite = owner->GetComponent<SpriteComponent>();
@@ -47,22 +69,26 @@ class KeyboardControlComponent: public Component {
                 std::string keyCode = std::to_string(Game::event.key.keysym.sym);
 
                 if(keyCode.compare(upKey) == 0) {
-                    transform->velocity.y = -30;
+                    CheckIfInsideWindow();
+                    transform->velocity.y = -MOVEMENT_SPEED;
                     transform->velocity.x = 0;
                     sprite->Play("UpAnimation");
                 } 
                 if(keyCode.compare(rightKey) == 0) {
-                    transform->velocity.x = 30;
+                    CheckIfInsideWindow();
+                    transform->velocity.x = MOVEMENT_SPEED;
                     transform->velocity.y = 0;
                     sprite->Play("RightAnimation");
                 } 
                 if(keyCode.compare(downKey) == 0) {
-                    transform->velocity.y = 30;
+                    CheckIfInsideWindow();
+                    transform->velocity.y = MOVEMENT_SPEED;
                     transform->velocity.x = 0;
                     sprite->Play("DownAnimation");
                 } 
                 if(keyCode.compare(leftKey) == 0) {
-                    transform->velocity.x = -30;
+                    CheckIfInsideWindow();
+                    transform->velocity.x = -MOVEMENT_SPEED;
                     transform->velocity.y = 0;
                     sprite->Play("LeftAnimation");
                 } 
