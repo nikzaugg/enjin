@@ -32,6 +32,7 @@ public:
     void Render();
     void Destroy();
     void HandleCameraMovement();
+    void CheckCollisions();
 };
 
 #endif
