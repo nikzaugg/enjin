@@ -24,12 +24,14 @@ public:
     static SDL_Renderer *renderer;
     static AssetManager *assetManager;
     static SDL_Event event;
+    static SDL_Rect camera;
     void LoadLevel(int levelNumber);
     void Initialize(int width, int height);
     void ProcessInput();
     void Update();
     void Render();
     void Destroy();
+    void HandleCameraMovement();
 };
 
 #endif

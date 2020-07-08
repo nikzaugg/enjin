@@ -86,28 +86,28 @@ public:
 
             if (keyCode.compare(upKey) == 0)
             {
-                CheckIfInsideWindow();
+                // CheckIfInsideWindow();
                 transform->velocity.y = -MOVEMENT_SPEED;
                 transform->velocity.x = 0;
                 sprite->Play("UpAnimation");
             }
             if (keyCode.compare(rightKey) == 0)
             {
-                CheckIfInsideWindow();
+                // CheckIfInsideWindow();
                 transform->velocity.x = MOVEMENT_SPEED;
                 transform->velocity.y = 0;
                 sprite->Play("RightAnimation");
             }
             if (keyCode.compare(downKey) == 0)
             {
-                CheckIfInsideWindow();
+                // CheckIfInsideWindow();
                 transform->velocity.y = MOVEMENT_SPEED;
                 transform->velocity.x = 0;
                 sprite->Play("DownAnimation");
             }
             if (keyCode.compare(leftKey) == 0)
             {
-                CheckIfInsideWindow();
+                // CheckIfInsideWindow();
                 transform->velocity.x = -MOVEMENT_SPEED;
                 transform->velocity.y = 0;
                 sprite->Play("LeftAnimation");
