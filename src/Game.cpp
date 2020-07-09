@@ -206,6 +206,10 @@ void Game::CheckCollisions()
     {
         ProcessGameOver();
     }
+    if (collisionType == ENEMY_PROJECTILE_COLLISION)
+    {
+        ProcessGameOver();
+    }
     if (collisionType == PLAYER_LEVEL_COMPLETE_COLLISION)
     {
         ProcessNextLevel();
