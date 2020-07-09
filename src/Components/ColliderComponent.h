@@ -5,6 +5,7 @@
 #include "../Game.h"
 #include "../EntityManager.h"
 #include "./TransformComponent.h"
+#include "./SpriteComponent.h"
 
 class ColliderComponent : public Component
 {
@@ -14,6 +15,8 @@ public:
     SDL_Rect sourceRectangle;
     SDL_Rect destinationRectangle;
     TransformComponent *transform;
+    SDL_Texture *collisionTexture;
+    bool showCollisionTexture = false;
 
     ColliderComponent(std::string colliderTag, int x, int y, int width, int height)
     {
@@ -28,6 +31,8 @@ public:
             transform = owner->GetComponent<TransformComponent>();
             sourceRectangle = {0, 0, transform->width, transform->height};
             destinationRectangle = {collider.x, collider.y, collider.w, collider.h};
+            // TODO: make dynamic
+            collisionTexture = Game::assetManager->GetTexture("collision-image");
         }
     }
 
@@ -40,6 +45,22 @@ public:
 
         destinationRectangle.x = collider.x - Game::camera.x;
         destinationRectangle.y = collider.y - Game::camera.y;
+    }
+
+    void Render() override
+    {
+        if (Game::event.type == SDL_KEYDOWN)
+        {
+            if (Game::event.key.keysym.sym == SDLK_c)
+            {
+                showCollisionTexture = !showCollisionTexture;
+            }
+        }
+
+        if (showCollisionTexture)
+        {
+            TextureManager::Draw(collisionTexture, sourceRectangle, destinationRectangle, SDL_FLIP_NONE);
+        }
     }
 };
 
