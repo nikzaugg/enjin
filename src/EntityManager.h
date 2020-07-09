@@ -21,6 +21,7 @@ public:
     unsigned int GetEntityCount();
     void ListAllEntities() const;
     CollisionType CheckCollisions() const;
+    void DestroyInactiveEntities();
 };
 
 #endif
