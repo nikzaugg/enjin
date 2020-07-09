@@ -10,7 +10,7 @@
 class ColliderComponent : public Component
 {
 public:
-    std::string colliderTag;
+    ColliderType colliderType;
     SDL_Rect collider;
     SDL_Rect sourceRectangle;
     SDL_Rect destinationRectangle;
@@ -18,9 +18,9 @@ public:
     SDL_Texture *collisionTexture;
     bool showCollisionTexture = false;
 
-    ColliderComponent(std::string colliderTag, int x, int y, int width, int height)
+    ColliderComponent(ColliderType colliderType, int x, int y, int width, int height)
     {
-        this->colliderTag = colliderTag;
+        this->colliderType = colliderType;
         this->collider = {x, y, width, height};
     }
 

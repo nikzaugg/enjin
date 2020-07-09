@@ -33,6 +33,8 @@ public:
     void Destroy();
     void HandleCameraMovement();
     void CheckCollisions();
+    void ProcessNextLevel();
+    void ProcessGameOver();
 };
 
 #endif
