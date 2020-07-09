@@ -79,42 +79,44 @@ void EntityManager::ListAllEntities() const
 
 CollisionType EntityManager::CheckCollisions() const
 {
-    for (auto &thisEntity : entities)
+    for (int i = 0; i < entities.size() - 1; i++)
+    {
+        auto &thisEntity = entities[i];
         if (thisEntity->HasComponent<ColliderComponent>())
         {
             ColliderComponent *thisCollider = thisEntity->GetComponent<ColliderComponent>();
+            for (int j = i + 1; j < entities.size(); j++)
             {
-                for (auto &thatEntity : entities)
+                auto &thatEntity = entities[j];
+                if (thisEntity->name.compare(thatEntity->name) != 0 && thatEntity->HasComponent<ColliderComponent>())
                 {
-                    if (thisEntity->name.compare(thatEntity->name) != 0 && thatEntity->HasComponent<ColliderComponent>())
+                    ColliderComponent *thatCollider = thatEntity->GetComponent<ColliderComponent>();
+                    if (Collision::CheckRectangleCollision(thisCollider->collider, thatCollider->collider))
                     {
-                        ColliderComponent *thatCollider = thatEntity->GetComponent<ColliderComponent>();
-                        if (Collision::CheckRectangleCollision(thisCollider->collider, thatCollider->collider))
+                        if (thisCollider->colliderType == PLAYER_COLLIDER &&
+                            thatCollider->colliderType == ENEMY_COLLIDER)
                         {
-                            if (thisCollider->colliderType == PLAYER_COLLIDER &&
-                                thatCollider->colliderType == ENEMY_COLLIDER)
-                            {
-                                return PLAYER_ENEMY_COLLISION;
-                            }
-                            if (thisCollider->colliderType == PLAYER_COLLIDER &&
-                                thatCollider->colliderType == ENEMY_PROJECTILE_COLLIDER)
-                            {
-                                return ENEMY_PROJECTILE_COLLISION;
-                            }
-                            if (thisCollider->colliderType == ENEMY_COLLIDER &&
-                                thatCollider->colliderType == PLAYER_PROJECTILE_COLLIDER)
-                            {
-                                return ENEMY_PROJECTILE_COLLISION;
-                            }
-                            if (thisCollider->colliderType == PLAYER_COLLIDER &&
-                                thatCollider->colliderType == LEVEL_COMPLETE_COLLIDER)
-                            {
-                                return PLAYER_LEVEL_COMPLETE_COLLISION;
-                            }
+                            return PLAYER_ENEMY_COLLISION;
+                        }
+                        if (thisCollider->colliderType == PLAYER_COLLIDER &&
+                            thatCollider->colliderType == ENEMY_PROJECTILE_COLLIDER)
+                        {
+                            return ENEMY_PROJECTILE_COLLISION;
+                        }
+                        if (thisCollider->colliderType == ENEMY_COLLIDER &&
+                            thatCollider->colliderType == PLAYER_PROJECTILE_COLLIDER)
+                        {
+                            return ENEMY_PROJECTILE_COLLISION;
+                        }
+                        if (thisCollider->colliderType == PLAYER_COLLIDER &&
+                            thatCollider->colliderType == LEVEL_COMPLETE_COLLIDER)
+                        {
+                            return PLAYER_LEVEL_COMPLETE_COLLISION;
                         }
                     }
                 }
             }
         }
+    }
     return NO_COLLISION;
 }
