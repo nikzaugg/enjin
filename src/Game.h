@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include "../lib/lua/sol.hpp"
 #include "./Entity.h"
 #include "./Component.h"
 #include "./EntityManager.h"
@@ -28,13 +29,13 @@ public:
     void LoadLevel(int levelNumber);
     void Initialize(int width, int height);
     void ProcessInput();
+    void ProcessNextLevel(int levelNumber);
+    void ProcessGameOver();
     void Update();
     void Render();
     void Destroy();
     void HandleCameraMovement();
     void CheckCollisions();
-    void ProcessNextLevel();
-    void ProcessGameOver();
 };
 
 #endif
